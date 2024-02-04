@@ -7,7 +7,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 
+	"github.com/fischettij/account-summarizer/internal/fileprocessor"
 	"github.com/fischettij/account-summarizer/internal/handlers"
+	"github.com/fischettij/account-summarizer/pkg/summarizer"
 )
 
 func Start() {
@@ -24,7 +26,22 @@ func Start() {
 		logger.Fatal(err.Error())
 	}
 
-	handlers.ConfigureRoutes(r)
+	fileParser, err := fileprocessor.NewFileParser(logger, config.FilesDirectory)
+	if err != nil {
+		logger.Fatal(err.Error())
+	}
+
+	summarizerManager, err := summarizer.NewManager(fileParser)
+	if err != nil {
+		logger.Fatal(err.Error())
+	}
+
+	summarizerHandler, err := handlers.NewSummarizerHandler(summarizerManager)
+	if err != nil {
+		logger.Fatal(err.Error())
+	}
+
+	handlers.ConfigureRoutes(r, summarizerHandler)
 
 	err = r.Run(fmt.Sprintf(":%s", config.Port))
 	if err != nil {

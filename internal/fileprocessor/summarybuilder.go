@@ -1,4 +1,4 @@
-package summarizer
+package fileprocessor
 
 import "time"
 
@@ -54,9 +54,9 @@ func (b *summaryBuilder) build() *Summary {
 	}
 
 	return &Summary{
-		TransactionsByMonth: mapTransactionsByMonth,
-		AverageCreditAmount: averageCredits,
-		AverageDebitAmount:  averageDebits,
-		Balance:             b.totalAmount,
+		transactionsByMonth: mapTransactionsByMonth,
+		averageCreditAmount: averageCredits,
+		averageDebitAmount:  averageDebits,
+		balance:             b.totalAmount,
 	}
 }

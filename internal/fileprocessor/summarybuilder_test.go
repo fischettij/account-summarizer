@@ -1,4 +1,4 @@
-package summarizer
+package fileprocessor
 
 import (
 	"testing"
@@ -54,17 +54,17 @@ func (suite *SummaryBuilderSuite) TestBuild() {
 		expectedBalance := debitA.amount + debitB.amount + creditA.amount + creditB.amount
 		expectedAverageCredit := (creditA.amount + creditB.amount) / 2
 		expectedAverageDebit := (debitA.amount + debitB.amount) / 2
-		suite.Require().Equal(expectedBalance, summary.Balance)
-		suite.Require().Equal(expectedAverageCredit, summary.AverageCreditAmount)
-		suite.Require().Equal(expectedAverageDebit, summary.AverageDebitAmount)
+		suite.Require().Equal(expectedBalance, summary.Balance())
+		suite.Require().Equal(expectedAverageCredit, summary.AverageCreditAmount())
+		suite.Require().Equal(expectedAverageDebit, summary.AverageDebitAmount())
 	})
 
 	suite.Run("given_no_transactions_when_build_summary_then_return_the_summary_and_no_error", func() {
 		builder := newSummaryBuilder()
 		summary := builder.build()
 
-		suite.Require().Equal(0.0, summary.Balance)
-		suite.Require().Equal(0.0, summary.AverageCreditAmount)
-		suite.Require().Equal(0.0, summary.AverageDebitAmount)
+		suite.Require().Equal(0.0, summary.Balance())
+		suite.Require().Equal(0.0, summary.AverageCreditAmount())
+		suite.Require().Equal(0.0, summary.AverageDebitAmount())
 	})
 }

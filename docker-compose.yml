@@ -7,3 +7,9 @@ services:
       - "8080:8080"
     environment:
       - PORT=8080
+      - FILES_DIRECTORY=./summaries
+    volumes:
+      - summaries:/summaries-examples
+
+volumes:
+  summaries:

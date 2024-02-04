@@ -9,7 +9,8 @@ const (
 )
 
 type Config struct {
-	Port string
+	Port           string
+	FilesDirectory string
 }
 
 func LoadConfig() (*Config, error) {
@@ -19,7 +20,8 @@ func LoadConfig() (*Config, error) {
 	}
 
 	config := &Config{
-		Port: port,
+		Port:           port,
+		FilesDirectory: os.Getenv("FILES_DIRECTORY"),
 	}
 
 	return config, nil
