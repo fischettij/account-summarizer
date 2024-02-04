@@ -35,7 +35,7 @@ func (suite *SummarizerSuite) TestGenerateReport() {
 		suite.Require().NoError(err)
 		defer os.Remove(tempFile.Name())
 
-		header := "Id,Date,transaction"
+		header := "Id,Date,Transaction"
 		data := "1,7/15,+60.5"
 		testData := []byte(fmt.Sprintf("%s\n%s\n", header, data))
 		_, err = tempFile.Write(testData)
@@ -59,7 +59,7 @@ func (suite *SummarizerSuite) TestGenerateReport() {
 		suite.Require().NoError(err)
 		defer os.Remove(tempFile.Name())
 
-		header := "Id,Date,transaction"
+		header := "Id,Date,Transaction"
 		testData := []byte(fmt.Sprintf("%s\n", header))
 		_, err = tempFile.Write(testData)
 		suite.Require().NoError(err)
