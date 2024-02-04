@@ -19,3 +19,7 @@ sudo docker-compose up
 The application will enable the following endpoints.
 
 TBD
+
+
+### Notes
+The endpoint POST /summary/send could be grpc or asynchronous. But to keep this simple te endpoint work sync 

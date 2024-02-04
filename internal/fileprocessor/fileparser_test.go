@@ -1,4 +1,4 @@
-package summarizer_test
+package fileprocessor_test
 
 import (
 	"fmt"
@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/suite"
 	"go.uber.org/zap"
 
-	"github.com/fischettij/account-summarizer/internal/summarizer"
+	"github.com/fischettij/account-summarizer/internal/fileprocessor"
 )
 
 type SummarizerSuite struct {
@@ -42,15 +42,15 @@ func (suite *SummarizerSuite) TestGenerateReport() {
 		suite.Require().NoError(err)
 		tempFile.Close()
 
-		fileParser, err := summarizer.NewFileParser(zap.NewNop())
+		fileParser, err := fileprocessor.NewFileParser(zap.NewNop(), "./")
 		suite.Require().NoError(err)
 
 		summary, err := fileParser.GenerateReport(fileName)
 		suite.Require().NoError(err)
 		suite.Require().NotNil(summary)
-		suite.Require().Equal(60.5, summary.AverageCreditAmount)
-		suite.Require().Equal(0.0, summary.AverageDebitAmount)
-		suite.Require().Equal(60.5, summary.Balance)
+		suite.Require().Equal(60.5, summary.AverageCreditAmount())
+		suite.Require().Equal(0.0, summary.AverageDebitAmount())
+		suite.Require().Equal(60.5, summary.Balance())
 	})
 
 	suite.Run("given_a_file_without_transactions_when_generate_report_then_return_summary_and_no_error", func() {
@@ -65,15 +65,15 @@ func (suite *SummarizerSuite) TestGenerateReport() {
 		suite.Require().NoError(err)
 		tempFile.Close()
 
-		fileParser, err := summarizer.NewFileParser(zap.NewNop())
+		fileParser, err := fileprocessor.NewFileParser(zap.NewNop(), "./")
 		suite.Require().NoError(err)
 
 		summary, err := fileParser.GenerateReport(fileName)
 		suite.Require().NoError(err)
 		suite.Require().NotNil(summary)
-		suite.Require().Equal(0.0, summary.AverageCreditAmount)
-		suite.Require().Equal(0.0, summary.AverageDebitAmount)
-		suite.Require().Equal(0.0, summary.Balance)
+		suite.Require().Equal(0.0, summary.AverageCreditAmount())
+		suite.Require().Equal(0.0, summary.AverageDebitAmount())
+		suite.Require().Equal(0.0, summary.Balance())
 	})
 
 	suite.Run("given_a_file_wit_invalid_headers_when_generate_report_then_return_error", func() {
@@ -88,12 +88,12 @@ func (suite *SummarizerSuite) TestGenerateReport() {
 		suite.Require().NoError(err)
 		tempFile.Close()
 
-		fileParser, err := summarizer.NewFileParser(zap.NewNop())
+		fileParser, err := fileprocessor.NewFileParser(zap.NewNop(), "./")
 		suite.Require().NoError(err)
 
 		summary, err := fileParser.GenerateReport(fileName)
 		suite.Require().Error(err)
-		suite.Require().ErrorIs(err, summarizer.ErrUnexpectedHeaders)
+		suite.Require().ErrorIs(err, fileprocessor.ErrUnexpectedHeaders)
 		suite.Require().Nil(summary)
 	})
 

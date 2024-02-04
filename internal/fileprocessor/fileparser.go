@@ -1,4 +1,4 @@
-package summarizer
+package fileprocessor
 
 import (
 	"encoding/csv"
@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/fischettij/account-summarizer/pkg/summarizer"
 	"go.uber.org/zap"
 )
 
@@ -24,20 +25,21 @@ type Logger interface {
 }
 
 type FileParser struct {
-	logger Logger
+	logger       Logger
+	sourceFolder string
 }
 
-func NewFileParser(logger Logger) (*FileParser, error) {
+func NewFileParser(logger Logger, sourceFolder string) (*FileParser, error) {
 	if logger == nil {
 		return nil, errors.New("logger cannot be nil")
 	}
-	return &FileParser{logger: logger}, nil
+	return &FileParser{logger: logger, sourceFolder: sourceFolder}, nil
 }
 
-func (s *FileParser) GenerateReport(path string) (*Summary, error) {
+func (s *FileParser) GenerateReport(fileName string) (summarizer.Summary, error) {
 	builder := newSummaryBuilder()
 
-	file, err := os.Open(path)
+	file, err := os.Open(fmt.Sprintf("%s/%s", s.sourceFolder, fileName))
 	if err != nil {
 		return nil, fmt.Errorf("error opening CSV file: %w", err)
 	}
