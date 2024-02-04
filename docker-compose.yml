@@ -7,9 +7,28 @@ services:
       - "8080:8080"
     environment:
       - PORT=8080
-      - FILES_DIRECTORY=./summaries
+      - FILES_DIRECTORY=/summaries
+      - SMTP_PORT=25
+      - SMTP_SERVER_URL=email
+      - SMTP_FROM=microservice@go.com
+      - SMTP_USERNAME=""
+      - SMTP_PASSWORD=""
+      - SMTP_IDENTITY=""
+      - SMTP_TLS_HOSTNAME=email
     volumes:
-      - summaries:/summaries-examples
+      - ./summaries-examples:/summaries
+    depends_on:
+          - email
 
-volumes:
-  summaries:
+  email:
+    image: rnwood/smtp4dev
+    environment:
+      - ServerOptions__HostName=email
+    #Specifies the TLS mode to use. None=Off. StartTls=On demand if client supports STARTTLS. ImplicitTls=TLS as soon as connection is established.
+      - ServerOptions__TlsMode=ImplicitTls
+    #Specifies the TLS certificate to use if TLS is enabled/requested. Specify "" to use an auto-generated self-signed certificate (then see console output on first startup)
+      - ServerOptions__TlsCertificate=
+    ports:
+      - "5000:80"
+      - "25:25"
+      - "587:587"
