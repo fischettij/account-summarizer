@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
@@ -35,11 +36,16 @@ func (suite *SummarizerSuite) TestGenerateReport() {
 		suite.Require().NoError(err)
 		defer os.Remove(tempFile.Name())
 
-		header := "Id,Date,Transaction"
-		data := "1,7/15,+60.5"
-		testData := []byte(fmt.Sprintf("%s\n%s\n", header, data))
-		_, err = tempFile.Write(testData)
-		suite.Require().NoError(err)
+		content := []string{
+			"Id,Date,Transaction",
+			"1,7/15,+60.5",
+			"1,8/15,+10.0",
+		}
+
+		for _, line := range content {
+			_, err = fmt.Fprintln(tempFile, line)
+			suite.Require().NoError(err)
+		}
 		tempFile.Close()
 
 		fileParser, err := fileprocessor.NewFileParser(zap.NewNop(), "./")
@@ -48,9 +54,12 @@ func (suite *SummarizerSuite) TestGenerateReport() {
 		summary, err := fileParser.GenerateReport(fileName)
 		suite.Require().NoError(err)
 		suite.Require().NotNil(summary)
-		suite.Require().Equal(60.5, summary.AverageCreditAmount())
+		suite.Require().Equal(35.25, summary.AverageCreditAmount())
 		suite.Require().Equal(0.0, summary.AverageDebitAmount())
-		suite.Require().Equal(60.5, summary.Balance())
+		suite.Require().Equal(70.5, summary.Balance())
+		suite.Require().Equal(2, len(summary.TransactionsByMonth()))
+		suite.Require().Equal(1, summary.TransactionsByMonth()[time.July])
+		suite.Require().Equal(1, summary.TransactionsByMonth()[time.August])
 	})
 
 	suite.Run("given_a_file_without_transactions_when_generate_report_then_return_summary_and_no_error", func() {

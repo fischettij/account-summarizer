@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"strings"
 	"time"
 )
 
@@ -50,24 +49,8 @@ func (m *Manager) SendSummary(ctx context.Context, emailTo, fileName string) err
 		return err
 	}
 
-	message := fmt.Sprintf("Subject: %s\r\n\r\n%s", emailBalanceSubject, generateBody(summary))
+	mimeType := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
+	message := fmt.Sprintf("Subject: %s\r\n%s%s", emailBalanceSubject, mimeType, generateHTMLBody(summary))
 	err = m.emailSender.SendEmail(emailTo, []byte(message))
 	return err
-}
-
-func generateBody(summary Summary) string {
-	header := "Hi! This is your anual account summary."
-	totalBalance := fmt.Sprintf("Total balance is %.2f", summary.Balance())
-	debitAverage := fmt.Sprintf("Average debit amount: %.2f", summary.AverageDebitAmount())
-	creditAverage := fmt.Sprintf("Average credit amount: %.2f", summary.AverageCreditAmount())
-	body := strings.Join([]string{header, totalBalance, debitAverage, creditAverage}, "\n")
-
-	for month := time.January; month <= time.December; month++ {
-		value, found := summary.TransactionsByMonth()[month]
-		if found && value > 0 {
-			body += fmt.Sprintf("\nNumber of transactions in %s: %d", month.String(), value)
-		}
-	}
-
-	return body
 }

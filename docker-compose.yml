@@ -16,7 +16,7 @@ services:
       - SMTP_IDENTITY=""
       - SMTP_TLS_HOSTNAME=email
     volumes:
-      - ./summaries-examples:/summaries
+      - ./examples:/summaries
     depends_on:
           - email
 
