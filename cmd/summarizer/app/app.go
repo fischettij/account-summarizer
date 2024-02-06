@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"github.com/fischettij/account-summarizer/internal/email"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -25,13 +26,27 @@ func Start() {
 	if err != nil {
 		logger.Fatal(err.Error())
 	}
+	/*
+
+		// FOR debug
+		config.SMTP = email.Config{
+			Port:      "25",
+			ServerURL: "localhost",
+			From:      "your-email@example.com",
+			Username:  "",
+			Password:  "",
+			Identity:  "",
+		}
+	*/
 
 	fileParser, err := fileprocessor.NewFileParser(logger, config.FilesDirectory)
 	if err != nil {
 		logger.Fatal(err.Error())
 	}
 
-	summarizerManager, err := summarizer.NewManager(fileParser)
+	emailSender := email.NewClient(config.SMTP)
+
+	summarizerManager, err := summarizer.NewManager(fileParser, emailSender)
 	if err != nil {
 		logger.Fatal(err.Error())
 	}

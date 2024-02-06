@@ -21,6 +21,11 @@ func (s *Summary) Balance() float64 {
 func (s *Summary) AverageCreditAmount() float64 {
 	return s.averageCreditAmount
 }
+
 func (s *Summary) AverageDebitAmount() float64 {
 	return s.averageDebitAmount
+}
+
+func (s *Summary) TransactionsByMonth() map[time.Month]int {
+	return s.transactionsByMonth
 }

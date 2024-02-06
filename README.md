@@ -20,6 +20,9 @@ The application will enable the following endpoints.
 
 TBD
 
+### Email server
+The microservice can integrate to a smtp server. For the development docker-compose define a dummy smt server rnwood/smtp4dev
+Can be acceded from localhost:5000
 
 ### Notes
 The endpoint POST /summary/send could be grpc or asynchronous. But to keep this simple te endpoint work sync 
