@@ -29,7 +29,7 @@ func TestGenerateHTMLBody2(t *testing.T) {
 	summary.EXPECT().AverageCreditAmount().Return(averageCredit)
 	summary.EXPECT().TransactionsByMonth().Return(transactionsByMonth).AnyTimes()
 
-	result := generateHTMLBody(summary)
+	result, _ := generateHTMLBody(summary)
 
 	expectedSubstrings := []string{
 		fmt.Sprintf("<td>Total balance is %.2f</td>", balance),

@@ -50,7 +50,11 @@ func (m *Manager) SendSummary(ctx context.Context, emailTo, fileName string) err
 	}
 
 	mimeType := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
-	message := fmt.Sprintf("Subject: %s\r\n%s%s", emailBalanceSubject, mimeType, generateHTMLBody(summary))
+	body, err := generateHTMLBody(summary)
+	if err != nil {
+		return err
+	}
+	message := fmt.Sprintf("Subject: %s\r\n%s%s", emailBalanceSubject, mimeType, body)
 	err = m.emailSender.SendEmail(emailTo, []byte(message))
 	return err
 }
