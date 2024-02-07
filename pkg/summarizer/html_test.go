@@ -1,14 +1,14 @@
-package summarizer
+package summarizer_test
 
 import (
 	"fmt"
+	"github.com/fischettij/account-summarizer/pkg/summarizer"
+	"github.com/fischettij/account-summarizer/pkg/summarizer/mocks"
 	"strings"
 	"testing"
 	"time"
 
 	"github.com/golang/mock/gomock"
-
-	"github.com/fischettij/account-summarizer/pkg/summarizer/mocks"
 )
 
 //go:generate mockgen -destination=mocks/mocks.go -package=mocks github.com/fischettij/account-summarizer/pkg/summarizer Summary
@@ -29,7 +29,7 @@ func TestGenerateHTMLBody2(t *testing.T) {
 	summary.EXPECT().AverageCreditAmount().Return(averageCredit)
 	summary.EXPECT().TransactionsByMonth().Return(transactionsByMonth).AnyTimes()
 
-	result, _ := generateHTMLBody(summary)
+	result, _ := summarizer.GenerateHTMLBody(summary)
 
 	expectedSubstrings := []string{
 		fmt.Sprintf("<td>Total balance is %.2f</td>", balance),

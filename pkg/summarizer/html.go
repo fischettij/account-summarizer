@@ -7,8 +7,6 @@ import (
 	"time"
 )
 
-const storiLogoURL = ""
-
 const tableTemplate = `
 		<!DOCTYPE html>
 			<html>
@@ -59,7 +57,7 @@ const tableTemplate = `
 			</html>
 	`
 
-func generateHTMLBody(summary Summary) (string, error) {
+func GenerateHTMLBody(summary Summary) (string, error) {
 	totalBalance := fmt.Sprintf("Total balance is %.2f", summary.Balance())
 	debitAverage := fmt.Sprintf("Average debit amount: %.2f", summary.AverageDebitAmount())
 	creditAverage := fmt.Sprintf("Average credit amount: %.2f", summary.AverageCreditAmount())

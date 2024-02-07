@@ -31,10 +31,10 @@ type Manager struct {
 
 func NewManager(summarizer Summarizer, emailSender EmailSender) (*Manager, error) {
 	if summarizer == nil {
-		return nil, errors.New("summarizer cannot be nil")
+		return nil, errors.New("summarizer can not be nil")
 	}
 	if emailSender == nil {
-		return nil, errors.New("emailSender cannot be nil")
+		return nil, errors.New("emailSender can not be nil")
 	}
 
 	return &Manager{
@@ -50,10 +50,11 @@ func (m *Manager) SendSummary(ctx context.Context, emailTo, fileName string) err
 	}
 
 	mimeType := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
-	body, err := generateHTMLBody(summary)
+	body, err := GenerateHTMLBody(summary)
 	if err != nil {
 		return err
 	}
+	// TODO: this logic about the emails message format could be in email package. Its implementation logic about how emails is sent
 	message := fmt.Sprintf("Subject: %s\r\n%s%s", emailBalanceSubject, mimeType, body)
 	err = m.emailSender.SendEmail(emailTo, []byte(message))
 	return err
