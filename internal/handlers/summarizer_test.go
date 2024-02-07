@@ -3,6 +3,7 @@ package handlers_test
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -122,5 +123,26 @@ func (suite *SummarizerHandlerSuite) TestSummarySend() {
 		router.ServeHTTP(responseRecorder, req)
 
 		suite.Require().Equal(http.StatusNoContent, responseRecorder.Code)
+	})
+
+	suite.Run("given_a_valid_body_when_summarizer_manager_return_an_error_then_return_internal_server_error", func() {
+		fileName := "file.csv"
+		email := "lionel.messi@gmail.com"
+		emptyRequestBodyMap := map[string]interface{}{
+			"file_name": fileName,
+			"email":     email,
+		}
+		jsonBody, err := json.Marshal(emptyRequestBodyMap)
+		suite.Require().NoError(err)
+
+		suite.manager.EXPECT().SendSummary(gomock.Any(), email, "file.csv").Return(errors.New("some-error"))
+
+		req, err := http.NewRequest(http.MethodPost, endpoint, bytes.NewBuffer(jsonBody))
+		suite.Require().NoError(err)
+
+		responseRecorder := httptest.NewRecorder()
+		router.ServeHTTP(responseRecorder, req)
+
+		suite.Require().Equal(http.StatusInternalServerError, responseRecorder.Code)
 	})
 }
